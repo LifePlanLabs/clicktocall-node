@@ -29,7 +29,7 @@ module.exports = function(app) {
     app.use(morgan('combined'));
 
     app.get('/', (req, res) => { 
-        console.log('testing');
+        console.log(req.body);
         res.send('TEST')
     })
 
