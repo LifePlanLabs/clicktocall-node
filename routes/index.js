@@ -34,6 +34,8 @@ module.exports = function(app) {
 
     // Receive request from Wordpress
     app.post('/call', function(request, response) {
+        console.log(req.body);
+        res.status(200).end();
         // var salesNumber = request.body.salesNumber;
         // var url = 'http://' + request.headers.host + '/outbound/' + encodeURIComponent(salesNumber);
 
