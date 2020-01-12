@@ -3,12 +3,12 @@ var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var twilio = require('twilio');
-var VoiceResponse = twilio.twiml.VoiceResponse;
+// var VoiceResponse = twilio.twiml.VoiceResponse;
 var config = require('../config');
 
 
 // Create a Twilio REST API client for authenticated requests to Twilio
-var client = twilio(config.accountSid, config.authToken);
+// var client = twilio(config.accountSid, config.authToken);
 
 
 // Configure application routes
