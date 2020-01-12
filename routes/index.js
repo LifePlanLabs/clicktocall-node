@@ -28,7 +28,7 @@ module.exports = function(app) {
     // Use morgan for HTTP request logging
     app.use(morgan('combined'));
 
-    app.get('/', (req, res) => { 
+    app.post('/', (req, res) => { 
         console.log(req.body);
         res.send('TEST')
     })
