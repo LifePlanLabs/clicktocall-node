@@ -33,7 +33,7 @@ module.exports = function(app) {
     // });
 
     // Receive request from Wordpress
-    app.post('/call', function(request, response) {
+    app.post('/call', function(req, res) {
         console.log(req.body);
         res.status(200).end();
         // var salesNumber = request.body.salesNumber;
