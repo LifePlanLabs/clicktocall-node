@@ -27,50 +27,33 @@ module.exports = function(app) {
     // Use morgan for HTTP request logging
     app.use(morgan('combined'));
 
-    // Home Page with Click to Call
-    // app.get('/', function(request, response) {
-    //     response.render('index');
-    // });
-
     // Receive request from Wordpress
-    app.post('/call', function(req, res) {
-        console.log(req.body);
-        res.status(200).end();
-        // var salesNumber = request.body.salesNumber;
-        // var url = 'http://' + request.headers.host + '/outbound/' + encodeURIComponent(salesNumber);
+    app.post('/call', async function(req, res) {
+       const phoneNumber = req.body.lead_number['1']
 
-        // var options = {
-        //     to: request.body.phoneNumber,
-        //     from: config.twilioNumber,
-        //     url: url,
-        // };
+       const options = {
+            to: phoneNumber,
+            from: config.twilioNumber,
+            url: `/voice-message/${phoneNumber}`,
+        };
 
-        // // Place an outbound call to the user, using the TwiML instructions
-        // // from the /outbound route
-        // client.calls.create(options)
-        //   .then((message) => {
-        //     console.log(message.responseText);
-        //     response.send({
-        //         message: 'Thank you! We will be calling you shortly.',
-        //     });
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //     response.status(500).send(error);
-        //   });
+        // Place an outbound call to the user, using the TwiML instructions
+        await client.calls.create(options)
+
+        res.status(200).end()
     });
 
-    // Return TwiML instructions for the outbound call
-    // app.post('/outbound/:salesNumber', function(request, response) {
-    //     var salesNumber = request.params.salesNumber;
-    //     var twimlResponse = new VoiceResponse();
+    app.post('/voice-message/:phoneNumber', function(req, res) {
+        const { phoneNumber } = request.params;
 
-    //     twimlResponse.say('Thanks for contacting our sales department. Our ' +
-    //                       'next available representative will take your call. ',
-    //                       { voice: 'alice' });
+        var twimlResponse = new VoiceResponse();
 
-    //     twimlResponse.dial(salesNumber);
+        twimlResponse.say('Thanks for contacting our sales department. Our ' +
+                          'next available representative will take your call. ',
+                          { voice: 'alice' });
 
-    //     response.send(twimlResponse.toString());
-    // });
+        twimlResponse.dial(phoneNumber);
+
+        response.send(twimlResponse.toString());
+    });
 };
