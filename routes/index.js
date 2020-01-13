@@ -40,7 +40,11 @@ module.exports = function(app) {
       .fetch({ countryCode: "US" })
       .then(async ({ phoneNumber }) => {
         try {
-          const url = "/voice-message/" + encodeURIComponent(phoneNumber);
+          var url =
+            "https://" +
+            request.headers.host +
+            "/voice-message/" +
+            encodeURIComponent(phoneNumber);
 
           const options = {
             to: phoneNumber,
