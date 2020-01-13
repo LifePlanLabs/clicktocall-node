@@ -28,13 +28,13 @@ module.exports = function(app) {
     app.use(morgan('combined'));
 
     // Receive request from Wordpress
-    app.post('/call', async function(req, res) {
+    app.post('/call', function(req, res) {
        const unformattedPhoneNumber = req.body.lead_number['1']
 
 
        client.lookups.phoneNumbers(unformattedPhoneNumber)
          .fetch({countryCode: 'US'})
-         .then(({ phoneNumber }) => {
+         .then(async ({ phoneNumber }) => {
             const options = {
                 to: phoneNumber,
                 from: config.twilioNumber,
