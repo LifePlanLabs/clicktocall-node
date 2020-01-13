@@ -29,18 +29,23 @@ module.exports = function(app) {
 
     // Receive request from Wordpress
     app.post('/call', async function(req, res) {
-       const phoneNumber = req.body.lead_number['1']
+       const unformattedPhoneNumber = req.body.lead_number['1']
 
-       const options = {
-            to: phoneNumber,
-            from: config.twilioNumber,
-            url: `/voice-message/${phoneNumber}`,
-        };
 
-        // Place an outbound call to the user, using the TwiML instructions
-        await client.calls.create(options)
-
-        res.status(200).end()
+       client.lookups.phoneNumbers(unformattedPhoneNumber)
+         .fetch({countryCode: 'US'})
+         .then(({ phoneNumber }) => {
+            const options = {
+                to: phoneNumber,
+                from: config.twilioNumber,
+                url: `/voice-message/${phoneNumber}`,
+            };
+    
+            // Place an outbound call to the user, using the TwiML instructions
+            await client.calls.create(options)
+    
+            res.status(200).end()
+         });
     });
 
     app.post('/voice-message/:phoneNumber', function(req, res) {
