@@ -42,7 +42,7 @@ module.exports = function(app) {
         try {
           var url =
             "https://" +
-            request.headers.host +
+            req.headers.host +
             "/voice-message/" +
             encodeURIComponent(phoneNumber);
 
