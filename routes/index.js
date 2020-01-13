@@ -40,7 +40,7 @@ module.exports = function(app) {
       .fetch({ countryCode: "US" })
       .then(async ({ phoneNumber }) => {
         try {
-          var url =
+          const url =
             "https://" +
             req.headers.host +
             "/voice-message/" +
@@ -61,7 +61,7 @@ module.exports = function(app) {
   });
 
   app.post("/voice-message/:phoneNumber", function(req, res) {
-    var twimlResponse = new VoiceResponse();
+    let twimlResponse = new VoiceResponse();
 
     twimlResponse.pause({
       length: 2
