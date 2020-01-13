@@ -65,7 +65,7 @@ module.exports = function(app) {
       { voice: "alice" }
     );
 
-    twimlResponse.dial(phoneNumber);
+    // twimlResponse.dial(phoneNumber);
 
     res.status(200).send(twimlResponse.toString());
   });
