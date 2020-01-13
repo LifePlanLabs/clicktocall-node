@@ -1,64 +1,72 @@
-var path = require('path');
-var express = require('express');
-var morgan = require('morgan');
-var twilio = require('twilio');
+var path = require("path");
+var express = require("express");
+var morgan = require("morgan");
+var twilio = require("twilio");
 var VoiceResponse = twilio.twiml.VoiceResponse;
-var config = require('../config');
+var config = require("../config");
 
 // Create a Twilio REST API client for authenticated requests to Twilio
 var client = twilio(config.accountSid, config.authToken);
 
 // Configure application routes
 module.exports = function(app) {
-    // Set Pug as the default template engine
-    app.set('view engine', 'pug');
+  // Set Pug as the default template engine
+  app.set("view engine", "pug");
 
-    // Express static file middleware - serves up JS, CSS, and images from the
-    // "public" directory where we started our webapp process
-    app.use(express.static(path.join(process.cwd(), 'public')));
+  // Express static file middleware - serves up JS, CSS, and images from the
+  // "public" directory where we started our webapp process
+  app.use(express.static(path.join(process.cwd(), "public")));
 
-    // Parse incoming request bodies as form-encoded
-    app.use(express.urlencoded({
-        extended: true,
-    }));
+  // Parse incoming request bodies as form-encoded
+  app.use(
+    express.urlencoded({
+      extended: true
+    })
+  );
 
-    app.use(express.json())
+  app.use(express.json());
 
-    // Use morgan for HTTP request logging
-    app.use(morgan('combined'));
+  // Use morgan for HTTP request logging
+  app.use(morgan("combined"));
 
-    // Receive request from Wordpress
-    app.post('/call', function(req, res) {
-       const unformattedPhoneNumber = req.body.lead_number['1']
+  // Receive request from Wordpress
+  app.post("/call", function(req, res) {
+    res.status(200).end();
 
+    const unformattedPhoneNumber = req.body.lead_number["1"];
 
-       client.lookups.phoneNumbers(unformattedPhoneNumber)
-         .fetch({countryCode: 'US'})
-         .then(async ({ phoneNumber }) => {
-            const options = {
-                to: phoneNumber,
-                from: config.twilioNumber,
-                url: `/voice-message/${phoneNumber}`,
-            };
-    
-            // Place an outbound call to the user, using the TwiML instructions
-            await client.calls.create(options)
-    
-            res.status(200).end()
-         });
-    });
+    client.lookups
+      .phoneNumbers(unformattedPhoneNumber)
+      .fetch({ countryCode: "US" })
+      .then(async ({ phoneNumber }) => {
+        try {
+          const options = {
+            to: phoneNumber,
+            from: config.twilioNumber,
+            url: `/voice-message/${phoneNumber}`
+          };
 
-    app.post('/voice-message/:phoneNumber', function(req, res) {
-        const { phoneNumber } = request.params;
+          // Place an outbound call to the user, using the TwiML instructions
+          await client.calls.create(options);
+        } catch (err) {
+          console.log(err);
+        }
+      });
+  });
 
-        var twimlResponse = new VoiceResponse();
+  app.post("/voice-message/:phoneNumber", function(req, res) {
+    const { phoneNumber } = request.params;
 
-        twimlResponse.say('Thanks for contacting our sales department. Our ' +
-                          'next available representative will take your call. ',
-                          { voice: 'alice' });
+    var twimlResponse = new VoiceResponse();
 
-        twimlResponse.dial(phoneNumber);
+    twimlResponse.say(
+      "Thanks for contacting our sales department. Our " +
+        "next available representative will take your call. ",
+      { voice: "alice" }
+    );
 
-        response.send(twimlResponse.toString());
-    });
+    twimlResponse.dial(phoneNumber);
+
+    response.send(twimlResponse.toString());
+  });
 };
