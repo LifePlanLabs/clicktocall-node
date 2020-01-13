@@ -63,7 +63,7 @@ module.exports = function(app) {
   app.post("/voice-message/:phoneNumber", function(req, res) {
     var twimlResponse = new VoiceResponse();
 
-    response.pause({
+    twimlResponse.pause({
       length: 2
     });
 
