@@ -55,7 +55,7 @@ module.exports = function(app) {
   });
 
   app.post("/voice-message/:phoneNumber", function(req, res) {
-    const { phoneNumber } = request.params;
+    const { phoneNumber } = req.params;
 
     var twimlResponse = new VoiceResponse();
 
@@ -67,6 +67,6 @@ module.exports = function(app) {
 
     twimlResponse.dial(phoneNumber);
 
-    response.send(twimlResponse.toString());
+    res.status(200).send(twimlResponse.toString());
   });
 };
