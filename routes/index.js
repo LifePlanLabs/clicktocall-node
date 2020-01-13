@@ -40,10 +40,12 @@ module.exports = function(app) {
       .fetch({ countryCode: "US" })
       .then(async ({ phoneNumber }) => {
         try {
+          const url = "/voice-message/" + encodeURIComponent(phoneNumber);
+
           const options = {
             to: phoneNumber,
             from: config.twilioNumber,
-            url: `/voice-message/${phoneNumber}`
+            url
           };
 
           // Place an outbound call to the user, using the TwiML instructions
