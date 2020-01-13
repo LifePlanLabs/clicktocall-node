@@ -61,9 +61,11 @@ module.exports = function(app) {
   });
 
   app.post("/voice-message/:phoneNumber", function(req, res) {
-    const { phoneNumber } = req.params;
-
     var twimlResponse = new VoiceResponse();
+
+    response.pause({
+      length: 2
+    });
 
     twimlResponse.say(
       "Thanks for contacting our sales department. Our " +
@@ -71,7 +73,7 @@ module.exports = function(app) {
       { voice: "alice" }
     );
 
-    // twimlResponse.dial(phoneNumber);
+    twimlResponse.dial(config.agentNumber);
 
     res.status(200).send(twimlResponse.toString());
   });
